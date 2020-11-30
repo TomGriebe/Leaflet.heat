@@ -155,15 +155,13 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
         cell = grid[y][x];
 
         if (!cell) {
-          // grid[y][x] = [p.x, p.y, k]; // manual change
-          grid[y][x] = [p.x, p.y, [k, 1]]; // manual change
+          grid[y][x] = [p.x, p.y, [k, 1]]; // [2] = value and number of values
 
         } else {
-          cell[0] = (cell[0] * cell[2] + p.x * k) / (cell[2] + k); // x
-          cell[1] = (cell[1] * cell[2] + p.y * k) / (cell[2] + k); // y
-          // cell[2] += k; // cumulated intensity value // manual change
-          cell[2][0] += k; // manual change
-          cell[2][1]++ // manual change
+          cell[0] = (cell[0] * cell[2][0] + p.x * k) / (cell[2][0] + k); // x
+          cell[1] = (cell[1] * cell[2][0] + p.y * k) / (cell[2][0] + k); // y
+          cell[2][0] += k; // accumulated value
+          cell[2][1]++; // number of values
         }
       }
     }
@@ -176,8 +174,7 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
             data.push([
               Math.round(cell[0]),
               Math.round(cell[1]),
-              // Math.min(cell[2], max) // manual change
-              Math.min(cell[2][0] / cell[2][1], max) // manual change
+              Math.min(cell[2][0] / cell[2][1], max)
             ]);
           }
         }
